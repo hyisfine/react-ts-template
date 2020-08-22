@@ -1,0 +1,6 @@
+{
+    // bin目录可使用esModule写法
+    "presets": [
+        "@babel/preset-env"
+    ]
+}
