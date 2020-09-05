@@ -17,6 +17,6 @@ module.exports = {
 	bracketSpacing: true,
 	// react尖括号换行
 	jsxBracketSameLine: false,
-	// 箭头函数单参数不添加括号
-	arrowParens: 'avoid',
+	// 箭头函数单参数添加括号
+	arrowParens: 'always',
 };

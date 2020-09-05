@@ -1,18 +1,36 @@
 import webpack from 'webpack';
-import path from 'path';
-import paseConfigFunc from '../webpack/base';
+import webpackDevServer, { Configuration } from 'webpack-dev-server';
+import paseConfigFunc from '../webpack/config';
+import pathConfig from '../webpack/paths';
+import commonConfig from './common';
+import chalk from 'chalk';
 
-webpack(paseConfigFunc('production')).run((error, stats) => {
-	if (error) {
-		console.log(error);
-	}
+process.env.NODE_ENV = 'development';
+process.env.PORT = '8080';
 
-	if (stats) {
-		console.log(
-			stats.toString({
-				chunks: false, // 使构建过程更静默无输出
-				colors: true, // 在控制台展示颜色
-			})
-		);
-	}
+const webpackConfig = paseConfigFunc('development');
+const webpackDevServerOptions: Configuration = {
+	contentBase: pathConfig.appPublic,
+	hot: true,
+	host: 'localhost',
+	// open: true,
+	port: ~~process.env.PORT,
+	compress: true,
+	stats: commonConfig.stats,
+	before: commonConfig.clearTerminal,
+};
+
+webpackDevServer.addDevServerEntrypoints(
+	webpackConfig,
+	webpackDevServerOptions
+);
+const compiler = webpack(webpackConfig);
+const server = new webpackDevServer(compiler, webpackDevServerOptions);
+
+compiler.hooks.beforeCompile.tap('beforeCompile', commonConfig.clearTerminal);
+
+server.listen(~~process.env.PORT, 'localhost', () => {
+	console.log(
+		chalk.cyan.bold(`dev server listening on port ${process.env.PORT}`)
+	);
 });
