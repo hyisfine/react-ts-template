@@ -14,10 +14,6 @@ compiler.run((error, stats) => {
 	}
 
 	if (stats) {
-		console.log(
-			stats.toString({
-				...commonConfig.stats,
-			})
-		);
+		console.log(stats.toString(commonConfig.stats));
 	}
 });

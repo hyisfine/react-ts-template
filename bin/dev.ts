@@ -13,11 +13,10 @@ const webpackDevServerOptions: Configuration = {
 	contentBase: pathConfig.appPublic,
 	hot: true,
 	host: 'localhost',
-	// open: true,
+	open: true,
 	port: ~~process.env.PORT,
 	compress: true,
 	stats: commonConfig.stats,
-	before: commonConfig.clearTerminal,
 };
 
 webpackDevServer.addDevServerEntrypoints(
@@ -28,9 +27,12 @@ const compiler = webpack(webpackConfig);
 const server = new webpackDevServer(compiler, webpackDevServerOptions);
 
 compiler.hooks.beforeCompile.tap('beforeCompile', commonConfig.clearTerminal);
-
-server.listen(~~process.env.PORT, 'localhost', () => {
+compiler.hooks.afterEmit.tap('afterEmit', () => {
 	console.log(
 		chalk.cyan.bold(`dev server listening on port ${process.env.PORT}`)
 	);
+});
+
+server.listen(~~process.env.PORT, 'localhost', () => {
+	console.log(chalk.cyan.bold(`🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️♲`));
 });

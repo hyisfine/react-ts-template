@@ -8,6 +8,10 @@ import styledComponentsTransformer from 'typescript-plugin-styled-components';
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import CompressionPlugin from 'compression-webpack-plugin';
+import AutoDllPlugin from 'autodll-webpack-plugin';
+import PostcssPresetEnv from 'postcss-preset-env';
+import Autoprefixer from 'autoprefixer';
+import HardSourceWebpackPlugin from 'hard-source-webpack-plugin';
 import pathConfig from './paths';
 
 type WebpackEnv = 'development' | 'production';
@@ -46,10 +50,11 @@ const baseConfigFunc = (webpackEnv: WebpackEnv) => {
 					exclude: /(node_modules|bower_components)/,
 					use: [
 						{
-							loader: 'babel-loader',
+							loader: 'babel-loader?cacheDirectory',
 							options: {
 								presets: ['@babel/env', '@babel/preset-react'],
 								plugins: [
+									'@babel/plugin-transform-runtime',
 									'@babel/plugin-syntax-dynamic-import',
 									[
 										'babel-plugin-styled-components',
@@ -65,7 +70,7 @@ const baseConfigFunc = (webpackEnv: WebpackEnv) => {
 							},
 						},
 						{
-							loader: 'ts-loader',
+							loader: 'ts-loader?cacheDirectory',
 							options: {
 								getCustomTransformers: () => ({
 									before: [styledComponentsTransformer()],
@@ -81,8 +86,25 @@ const baseConfigFunc = (webpackEnv: WebpackEnv) => {
 					],
 				},
 				{
-					test: /\.css$/i,
-					use: [MiniCssExtractPlugin.loader, 'css-loader'],
+					test: /\.(s[ac]ss|css)$/i,
+					use: [
+						isEnvProduction
+							? MiniCssExtractPlugin.loader
+							: 'style-loader',
+						'css-loader',
+						{
+							loader: 'postcss-loader',
+							options: {
+								ident: 'postcss',
+								plugins: [
+									Autoprefixer({
+										env: webpackEnv,
+									}),
+								],
+							},
+						},
+						'sass-loader',
+					],
 				},
 				{
 					loader: 'file-loader',
@@ -95,14 +117,10 @@ const baseConfigFunc = (webpackEnv: WebpackEnv) => {
 				},
 				{
 					test: /\.(png|jpe?g|gif)$/i,
-					loader: [
-						{
-							loader: 'url-loader',
-							options: {
-								limit: 1024 * 20,
-							},
-						},
-					],
+					loader: 'url-loader',
+					options: {
+						limit: 1024 * 20,
+					},
 				},
 			],
 		},
@@ -110,10 +128,8 @@ const baseConfigFunc = (webpackEnv: WebpackEnv) => {
 			minimize: isEnvProduction,
 			minimizer: [
 				new TerserWebpackPlugin({
-					exclude: /node_modules/,
-					include: /src/,
 					sourceMap: false,
-					extractComments: false,
+					extractComments: true,
 					parallel: 4,
 					cache: true,
 				}),
@@ -137,17 +153,17 @@ const baseConfigFunc = (webpackEnv: WebpackEnv) => {
 							const packageName = module.context.match(
 								/[\\/]node_modules[\\/](.*?)([\\/]|$)/
 							)[1];
-
 							return `vendor.${packageName.replace('@', '')}`;
 						},
 						chunks: 'all',
-						reuseExistingChunk: true,
+						reuseExistingChunk: false,
 						priority: 10,
 					},
 				},
 			},
 		},
 		plugins: [
+			new HardSourceWebpackPlugin(),
 			new CleanWebpackPlugin(),
 			new HtmlWebpackPlugin({
 				template: pathConfig.appHtmlTemplate,
@@ -160,23 +176,33 @@ const baseConfigFunc = (webpackEnv: WebpackEnv) => {
 					minifyURLs: isEnvProduction,
 				},
 			}),
-			isEnvDevelopment &&
+			// new AutoDllPlugin({
+			// 	inject: true, // will inject the DLL bundle to index.html
+			// 	debug: true,
+			// 	filename: '[name]_[hash].js',
+			// 	path: './dll',
+			// 	entry: {
+			// 		vendor: ['react', 'react-dom','styled-components'],
+			// 	},
+			// }),
+			isEnvProduction &&
 				new CopyWebpackPlugin({
 					patterns: [
 						{
 							from: pathConfig.appPublic,
 							to: pathConfig.appDist,
+							globOptions: {
+								ignore: ['**/*.ejs'],
+							},
 						},
 					],
 				}),
-			new MiniCssExtractPlugin({
-				filename: isEnvProduction
-					? 'static/css/[name].[contenthash:8].css'
-					: 'static/css/[name].css',
-				chunkFilename: isEnvProduction
-					? 'static/css/[name].[contenthash:8].chunk.css'
-					: 'static/css/[name].chunk.css',
-			}),
+			isEnvProduction &&
+				new MiniCssExtractPlugin({
+					filename: 'static/css/[name].[contenthash:8].css',
+					chunkFilename:
+						'static/css/[name].[contenthash:8].chunk.css',
+				}),
 			isEnvDevelopment && new HotModuleReplacementPlugin(),
 		].filter(Boolean),
 	};

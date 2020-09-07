@@ -1,22 +1,24 @@
-// import styled from 'styled-components';
+import styled from 'styled-components';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import './index.scss';
 
-let a = {};
+let H1 = styled.h1`
+	flex: 1;
+	flex-direction:column;
+`;
 
-let b = (a) => {
-	console.log(a.b.c);
-};
-
-b(a);
+new Promise((a)=>{
+	setTimeout(() => {
+		a();
+	}, 0);
+});
 
 ReactDOM.render(
 	<div
-		className='1'
-		data-index='1'
-		style={{
-			fontSize: '30px',
-		}}
-	></div>,
+	>
+		<H1>测试</H1>
+	</div>,
 	document.getElementById('root')
 );
+
