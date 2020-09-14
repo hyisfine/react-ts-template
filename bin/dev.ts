@@ -26,13 +26,17 @@ webpackDevServer.addDevServerEntrypoints(
 const compiler = webpack(webpackConfig);
 const server = new webpackDevServer(compiler, webpackDevServerOptions);
 
-compiler.hooks.beforeCompile.tap('beforeCompile', commonConfig.clearTerminal);
-compiler.hooks.afterEmit.tap('afterEmit', () => {
+compiler.hooks.beforeCompile.tap('beforeCompile', () => {
+	commonConfig.clearTerminal();
+	console.log(chalk.cyan.bold(`🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️♲`));
 	console.log(
 		chalk.cyan.bold(`dev server listening on port ${process.env.PORT}`)
 	);
 });
+// compiler.hooks.afterEmit.tap('afterEmit', () => {});
 
-server.listen(~~process.env.PORT, 'localhost', () => {
-	console.log(chalk.cyan.bold(`🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️♲`));
+server.listen(~~process.env.PORT, 'localhost', (error) => {
+	if (error) {
+		console.log(error);
+	}
 });

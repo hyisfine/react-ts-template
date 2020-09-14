@@ -12,11 +12,12 @@ import AutoDllPlugin from 'autodll-webpack-plugin';
 import PostcssPresetEnv from 'postcss-preset-env';
 import Autoprefixer from 'autoprefixer';
 import HardSourceWebpackPlugin from 'hard-source-webpack-plugin';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import pathConfig from './paths';
 
 type WebpackEnv = 'development' | 'production';
 
-const baseConfigFunc = (webpackEnv: WebpackEnv) => {
+const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 	const isEnvDevelopment = webpackEnv === 'development';
 	const isEnvProduction = webpackEnv === 'production';
 
@@ -203,6 +204,7 @@ const baseConfigFunc = (webpackEnv: WebpackEnv) => {
 					chunkFilename:
 						'static/css/[name].[contenthash:8].chunk.css',
 				}),
+			isEnvProduction && new BundleAnalyzerPlugin(),
 			isEnvDevelopment && new HotModuleReplacementPlugin(),
 		].filter(Boolean),
 	};

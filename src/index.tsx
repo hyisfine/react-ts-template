@@ -8,11 +8,6 @@ let H1 = styled.h1`
 	flex-direction:column;
 `;
 
-new Promise((a)=>{
-	setTimeout(() => {
-		a();
-	}, 0);
-});
 
 ReactDOM.render(
 	<div
