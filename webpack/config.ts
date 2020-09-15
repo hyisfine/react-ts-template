@@ -5,11 +5,7 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import styledComponentsTransformer from 'typescript-plugin-styled-components';
-import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
-import CompressionPlugin from 'compression-webpack-plugin';
-import AutoDllPlugin from 'autodll-webpack-plugin';
-import PostcssPresetEnv from 'postcss-preset-env';
 import Autoprefixer from 'autoprefixer';
 import HardSourceWebpackPlugin from 'hard-source-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
@@ -24,14 +20,12 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 	const baseConfig: Configuration = {
 		name: 'yoo',
 		mode: isEnvProduction ? 'production' : 'development',
-		devtool: isEnvProduction ? false : 'eval-source-map',
+		devtool: isEnvProduction ? false : 'cheap-module-eval-source-map',
 		entry: pathConfig.appIndexJs,
 		bail: isEnvProduction,
 		output: {
 			path: pathConfig.appDist,
-			filename: isEnvProduction
-				? 'static/js/[name].[contenthash:8].js'
-				: 'static/js/main.js',
+			filename: isEnvProduction ? 'static/js/[name].[contenthash:8].js' : 'static/js/main.js',
 			chunkFilename: isEnvProduction
 				? 'static/js/[name].[contenthash:8].chunk.js'
 				: 'static/js/[name].chunk.js',
@@ -53,7 +47,10 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 						{
 							loader: 'babel-loader?cacheDirectory',
 							options: {
-								presets: ['@babel/env', '@babel/preset-react'],
+								presets: [
+									['@babel/preset-env', { modules: 'commonjs' }],
+									'@babel/preset-react',
+								],
 								plugins: [
 									'@babel/plugin-transform-runtime',
 									'@babel/plugin-syntax-dynamic-import',
@@ -65,8 +62,7 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 											pure: isEnvProduction,
 										},
 									],
-									isEnvDevelopment &&
-										'react-hot-loader/babel',
+									isEnvDevelopment && 'react-hot-loader/babel',
 								].filter(Boolean),
 							},
 						},
@@ -78,20 +74,23 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 								}),
 							},
 						},
-						{
-							loader: 'eslint-loader',
-							options: {
-								fix: true,
-							},
-						},
 					],
+				},
+				{
+					test: /\.(ts|tsx)$/,
+					include: /src/,
+					loader: 'eslint-loader',
+					options: {
+						fix: true,
+						cache: true,
+						quiet: true,
+					},
+					enforce: 'pre',
 				},
 				{
 					test: /\.(s[ac]ss|css)$/i,
 					use: [
-						isEnvProduction
-							? MiniCssExtractPlugin.loader
-							: 'style-loader',
+						isEnvProduction ? MiniCssExtractPlugin.loader : 'style-loader',
 						'css-loader',
 						{
 							loader: 'postcss-loader',
@@ -152,7 +151,7 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 						test: /[\\/]node_modules[\\/]/,
 						name(module) {
 							const packageName = module.context.match(
-								/[\\/]node_modules[\\/](.*?)([\\/]|$)/
+								/[\\/]node_modules[\\/](.*?)([\\/]|$)/,
 							)[1];
 							return `vendor.${packageName.replace('@', '')}`;
 						},
@@ -177,15 +176,6 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 					minifyURLs: isEnvProduction,
 				},
 			}),
-			// new AutoDllPlugin({
-			// 	inject: true, // will inject the DLL bundle to index.html
-			// 	debug: true,
-			// 	filename: '[name]_[hash].js',
-			// 	path: './dll',
-			// 	entry: {
-			// 		vendor: ['react', 'react-dom','styled-components'],
-			// 	},
-			// }),
 			isEnvProduction &&
 				new CopyWebpackPlugin({
 					patterns: [
@@ -201,8 +191,7 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 			isEnvProduction &&
 				new MiniCssExtractPlugin({
 					filename: 'static/css/[name].[contenthash:8].css',
-					chunkFilename:
-						'static/css/[name].[contenthash:8].chunk.css',
+					chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
 				}),
 			isEnvProduction && new BundleAnalyzerPlugin(),
 			isEnvDevelopment && new HotModuleReplacementPlugin(),

@@ -6,23 +6,24 @@ module.exports = {
 			jsx: true,
 		},
 	},
-	extends: ['eslint:recommended', 'plugin:react/recommended'],
+	extends: ['alloy', 'alloy/react', 'alloy/typescript'],
 	parser: '@typescript-eslint/parser',
 	plugins: ['@typescript-eslint'],
 	rules: {
 		semi: 1,
-		//禁止在 return、throw、continue 和 break 语句之后出现不可达代码
+		// 禁止在 return、throw、continue 和 break 语句之后出现不可达代码
 		'no-unreachable': 1,
-		//要求使用 === 和 !==
+		// 要求使用 === 和 !==
 		eqeqeq: 1,
-		//禁止不必要的 .bind() 调用
+		// 禁止不必要的 .bind() 调用
 		'no-extra-bind': 1,
-		//要求使用 let 或 const 而不是 var
+		// 要求使用 let 或 const 而不是 var
 		'no-var': 1,
 		'react/destructuring-assignment': 1,
 		'react/no-will-update-set-state': 1,
 		'react/jsx-equals-spacing': 1,
 		'no-unused-vars': 1,
+		'@typescript-eslint/explicit-member-accessibility': 0,
 	},
 	settings: {
 		react: {

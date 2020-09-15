@@ -1,19 +1,26 @@
-import styled from 'styled-components';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
+import A from './a';
 
-let H1 = styled.h1`
-	flex: 1;
-	flex-direction:column;
-`;
-
-
+class Ac extends React.Component {
+	public render() {
+		return <div>abc</div>;
+	}
+}
 ReactDOM.render(
-	<div
-	>
-		<H1>测试</H1>
-	</div>,
-	document.getElementById('root')
-);
+	<div>
+		<Ac />
+		<A />
+		<div
+			style={{
+				background: '#111111',
+			}}
+		>
+			aa
+		</div>
 
+		<div />
+	</div>,
+	document.getElementById('root'),
+);

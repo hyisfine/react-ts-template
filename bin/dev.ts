@@ -1,5 +1,5 @@
 import webpack from 'webpack';
-import webpackDevServer, { Configuration } from 'webpack-dev-server';
+import WebpackDevServer, { Configuration } from 'webpack-dev-server';
 import paseConfigFunc from '../webpack/config';
 import pathConfig from '../webpack/paths';
 import commonConfig from './common';
@@ -19,19 +19,14 @@ const webpackDevServerOptions: Configuration = {
 	stats: commonConfig.stats,
 };
 
-webpackDevServer.addDevServerEntrypoints(
-	webpackConfig,
-	webpackDevServerOptions
-);
+WebpackDevServer.addDevServerEntrypoints(webpackConfig, webpackDevServerOptions);
 const compiler = webpack(webpackConfig);
-const server = new webpackDevServer(compiler, webpackDevServerOptions);
+const server = new WebpackDevServer(compiler, webpackDevServerOptions);
 
 compiler.hooks.beforeCompile.tap('beforeCompile', () => {
 	commonConfig.clearTerminal();
 	console.log(chalk.cyan.bold(`🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️♲`));
-	console.log(
-		chalk.cyan.bold(`dev server listening on port ${process.env.PORT}`)
-	);
+	console.log(chalk.cyan.bold(`dev server listening on port ${process.env.PORT}`));
 });
 // compiler.hooks.afterEmit.tap('afterEmit', () => {});
 
