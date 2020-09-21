@@ -1,15 +1,25 @@
 import React, { PureComponent } from 'react';
 
 function sealed(constructor: Function) {
+	// return Bool
 	console.log(arguments);
-
-	Object.seal(constructor);
-	Object.seal(constructor.prototype);
 }
+let a = 1;
+
+interface State {
+	a: 1;
+}
+
 @sealed
-export class index extends PureComponent {
+export class index extends PureComponent<{}, State> {
+	constructor(params) {
+		super(params);
+		// this.state = {
+		// 	a: 1,
+		// };
+	}
 	render() {
-		return <div>测试</div>;
+		return <div>11测试</div>;
 	}
 }
 

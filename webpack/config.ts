@@ -9,6 +9,9 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import Autoprefixer from 'autoprefixer';
 import HardSourceWebpackPlugin from 'hard-source-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import ForkTsCheckerNotifierWebpackPlugin from 'fork-ts-checker-notifier-webpack-plugin';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import EslintWebpackPlugin from 'eslint-webpack-plugin';
 import pathConfig from './paths';
 
 type WebpackEnv = 'development' | 'production';
@@ -29,13 +32,13 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 			chunkFilename: isEnvProduction
 				? 'static/js/[name].[contenthash:8].chunk.js'
 				: 'static/js/[name].chunk.js',
-			pathinfo: isEnvDevelopment,
+			pathinfo: isEnvProduction,
 			// publicPath: pathConfig.publicPath,
 		},
 		resolve: {
-			alias: pathConfig.appAlias,
+			alias: { ...pathConfig.appAlias },
 			extensions: ['.tsx', '.ts', '.js', '.jsx'],
-			modules: ['node_modules', pathConfig.appSrc],
+			modules: ['node_modules'],
 		},
 		module: {
 			rules: [
@@ -45,10 +48,17 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 					exclude: /(node_modules|bower_components)/,
 					use: [
 						{
-							loader: 'babel-loader?cacheDirectory',
+							loader: 'babel-loader',
 							options: {
+								cacheDirectory: true,
 								presets: [
-									['@babel/preset-env', { modules: 'commonjs' }],
+									[
+										'@babel/preset-env',
+										{
+											modules: 'commonjs',
+											targets: { browsers: 'last 2 versions' },
+										},
+									],
 									'@babel/preset-react',
 								],
 								plugins: [
@@ -67,25 +77,15 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 							},
 						},
 						{
-							loader: 'ts-loader?cacheDirectory',
+							loader: 'ts-loader',
 							options: {
+								transpileOnly: true,
 								getCustomTransformers: () => ({
 									before: [styledComponentsTransformer()],
 								}),
 							},
 						},
 					],
-				},
-				{
-					test: /\.(ts|tsx)$/,
-					include: /src/,
-					loader: 'eslint-loader',
-					options: {
-						fix: true,
-						cache: true,
-						quiet: true,
-					},
-					enforce: 'pre',
 				},
 				{
 					test: /\.(s[ac]ss|css)$/i,
@@ -164,6 +164,8 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 		},
 		plugins: [
 			new HardSourceWebpackPlugin(),
+			new ForkTsCheckerWebpackPlugin({}),
+			new ForkTsCheckerNotifierWebpackPlugin({ title: 'TypeScript', excludeWarnings: false }),
 			new CleanWebpackPlugin(),
 			new HtmlWebpackPlugin({
 				template: pathConfig.appHtmlTemplate,
@@ -195,6 +197,14 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 				}),
 			isEnvProduction && new BundleAnalyzerPlugin(),
 			isEnvDevelopment && new HotModuleReplacementPlugin(),
+			isEnvDevelopment &&
+				new EslintWebpackPlugin({
+					fix: true,
+					// emitWarning: true,
+					quiet: true,
+					context: 'src',
+					extensions: ['.tsx', '.ts', '.js'],
+				}),
 		].filter(Boolean),
 	};
 

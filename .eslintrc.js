@@ -6,7 +6,14 @@ module.exports = {
 			jsx: true,
 		},
 	},
-	extends: ['alloy', 'alloy/react', 'alloy/typescript'],
+	extends: [
+		'alloy',
+		'alloy/react',
+		'alloy/typescript',
+		// 'plugin:import/errors',
+		// 'plugin:import/warnings',
+		// 'plugin:import/typescript',
+	],
 	parser: '@typescript-eslint/parser',
 	plugins: ['@typescript-eslint'],
 	rules: {
@@ -24,6 +31,9 @@ module.exports = {
 		'react/jsx-equals-spacing': 1,
 		'no-unused-vars': 1,
 		'@typescript-eslint/explicit-member-accessibility': 0,
+		'@typescript-eslint/no-empty-interface': 1,
+		'@typescript-eslint/no-useless-constructor': 1,
+		// 'import/first': 2,
 	},
 	settings: {
 		react: {

@@ -13,7 +13,7 @@ const webpackDevServerOptions: Configuration = {
 	contentBase: pathConfig.appPublic,
 	hot: true,
 	host: 'localhost',
-	open: true,
+	// open: true,
 	port: ~~process.env.PORT,
 	compress: true,
 	stats: commonConfig.stats,

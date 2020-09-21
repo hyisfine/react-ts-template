@@ -22,5 +22,15 @@
             "@types",
             "node_modules/@types"
         ],
+        "importsNotUsedAsValues": "preserve",
+        "baseUrl": "./src",
+        "paths": {
+            "@page/*": [
+                "page/*"
+            ],
+            "@components/*": [
+                "components/*"
+            ],
+        },
     },
 }

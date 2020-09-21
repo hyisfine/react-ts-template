@@ -6,8 +6,8 @@ const appDirectory = fs.realpathSync(process.cwd());
 const resolvePath = (relativePath) => path.resolve(appDirectory, relativePath);
 
 const appAlias = {
-	'@': resolvePath('src/components'),
-	page: resolvePath('src/page'),
+	'@components': resolvePath('src/components'),
+	'@page': resolvePath('src/page'),
 	// action:resolvePath('src/action'),
 };
 

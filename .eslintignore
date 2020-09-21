@@ -1,5 +1,5 @@
-dist/*
-bin/*
-node_modules/*
-public/*
+dist/
+bin/
+node_modules/
+public/
 .eslintrc.js
