@@ -1,5 +1,5 @@
-import chalk from 'chalk';
 import fs from 'fs';
+import chalk from 'chalk';
 
 const commitPath = process.env.HUSKY_GIT_PARAMS || '';
 const commit = fs.readFileSync(commitPath, 'utf-8').trim();

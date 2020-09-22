@@ -12,6 +12,7 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import ForkTsCheckerNotifierWebpackPlugin from 'fork-ts-checker-notifier-webpack-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import EslintWebpackPlugin from 'eslint-webpack-plugin';
+import StylelintWebpackPlugin from 'stylelint-webpack-plugin';
 import pathConfig from './paths';
 
 type WebpackEnv = 'development' | 'production';
@@ -91,7 +92,7 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 					],
 				},
 				{
-					test: /\.(s[ac]ss|css)$/i,
+					test: /\.(s?css)$/i,
 					use: [
 						isEnvProduction ? MiniCssExtractPlugin.loader : 'style-loader',
 						'css-loader',
@@ -210,6 +211,13 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 					quiet: true,
 					context: 'src',
 					extensions: ['.tsx', '.ts', '.js'],
+				}),
+			isEnvDevelopment &&
+				new StylelintWebpackPlugin({
+					context: 'src',
+					fix: true,
+					lintDirtyModulesOnly: true,
+					quiet: true,
 				}),
 		].filter(Boolean),
 	};

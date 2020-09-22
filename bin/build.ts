@@ -1,7 +1,7 @@
 import webpack from 'webpack';
+import chalk from 'chalk';
 import paseConfigFunc from '../webpack/config';
 import commonConfig from './common';
-import chalk from 'chalk';
 
 process.env.NODE_ENV = 'production';
 

@@ -1,9 +1,9 @@
 import webpack from 'webpack';
 import WebpackDevServer, { Configuration } from 'webpack-dev-server';
+import chalk from 'chalk';
 import paseConfigFunc from '../webpack/config';
 import pathConfig from '../webpack/paths';
 import commonConfig from './common';
-import chalk from 'chalk';
 
 process.env.NODE_ENV = 'development';
 process.env.PORT = '8080';

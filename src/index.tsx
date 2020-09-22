@@ -8,6 +8,7 @@ import './index.scss';
 const H1 = styled.h1`
 	background: red;
 	flex: 1;
+
 	div {
 		background: red;
 	}
