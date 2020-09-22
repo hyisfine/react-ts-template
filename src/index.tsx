@@ -1,9 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.scss';
-import A from './a';
+import React, { Component } from 'react';
 import styled from 'styled-components';
-import page from '@page/index';
+import ReactDOM from 'react-dom';
+import { a } from '@page/index';
+import A from './a';
+import './index.scss';
+
 const H1 = styled.h1`
 	background: red;
 	flex: 1;
@@ -11,22 +12,36 @@ const H1 = styled.h1`
 		background: red;
 	}
 `;
-class Ac extends React.Component {
-	public render() {
-		return <div>abc</div>;
+class Ac extends Component {
+	handleBack = () => {};
+	render() {
+		return (
+			<div onClick={this.handleBack}>
+				<div>策四 </div>
+			</div>
+		);
 	}
 }
+
+interface Props {
+	Enabled: boolean;
+}
+const Hello = (props: Props) => <div />;
+
 ReactDOM.render(
 	<div>
 		<Ac />
-		<A />
+		<A b />
 		<div
+			className='11'
 			style={{
-				background: '#111111',
+				background: 'red',
 			}}
+			data-a='1'
+			data-v='1'
 		>
-			aa
 			<H1>123</H1>
+			{true && <div>111</div>}
 		</div>
 		<h1 />
 		<div />

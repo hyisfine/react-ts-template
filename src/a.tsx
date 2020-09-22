@@ -4,19 +4,24 @@ function sealed(constructor: Function) {
 	// return Bool
 	console.log(arguments);
 }
-let a = 1;
+
+interface Props {
+	b: boolean;
+}
 
 interface State {
-	a: 1;
+	a: boolean;
 }
 
 @sealed
-export class index extends PureComponent<{}, State> {
+export class index extends PureComponent<Props, State> {
 	constructor(params) {
 		super(params);
-		// this.state = {
-		// 	a: 1,
-		// };
+		const { b } = this.props;
+		this.state = {
+			a: false,
+		};
+		console.log(b);
 	}
 	render() {
 		return <div>11测试</div>;

@@ -1,4 +1,4 @@
-import webpack, { Configuration, HotModuleReplacementPlugin } from 'webpack';
+import { Configuration, HotModuleReplacementPlugin } from 'webpack';
 import TerserWebpackPlugin from 'terser-webpack-plugin';
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
@@ -22,6 +22,7 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 
 	const baseConfig: Configuration = {
 		name: 'yoo',
+		context: pathConfig.resolvePath('../yoo'),
 		mode: isEnvProduction ? 'production' : 'development',
 		devtool: isEnvProduction ? false : 'cheap-module-eval-source-map',
 		entry: pathConfig.appIndexJs,
@@ -56,7 +57,9 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 										'@babel/preset-env',
 										{
 											modules: 'commonjs',
-											targets: { browsers: 'last 2 versions' },
+											targets: {
+												browsers: 'last 2 versions',
+											},
 										},
 									],
 									'@babel/preset-react',
@@ -165,7 +168,10 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 		plugins: [
 			new HardSourceWebpackPlugin(),
 			new ForkTsCheckerWebpackPlugin({}),
-			new ForkTsCheckerNotifierWebpackPlugin({ title: 'TypeScript', excludeWarnings: false }),
+			new ForkTsCheckerNotifierWebpackPlugin({
+				title: 'TypeScript',
+				excludeWarnings: false,
+			}),
 			new CleanWebpackPlugin(),
 			new HtmlWebpackPlugin({
 				template: pathConfig.appHtmlTemplate,
