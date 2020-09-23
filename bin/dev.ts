@@ -7,7 +7,7 @@ import commonConfig from './common';
 
 process.env.NODE_ENV = 'development';
 process.env.PORT = '8080';
-
+// process.env.TS_NODE_PROJECT = './../tsconfig-webpack.json';
 const webpackConfig = paseConfigFunc('development');
 const webpackDevServerOptions: Configuration = {
 	contentBase: pathConfig.appPublic,

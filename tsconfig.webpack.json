@@ -1,0 +1,9 @@
+{
+    // "module": "CommonJS"将会导致webpack无法使用code splitting
+    // 为ts-node单独创建tsconfig.json 
+    "compilerOptions": {
+        "target": "es5",
+        "module": "CommonJS",
+    },
+    "extends": "./tsconfig.json"
+}

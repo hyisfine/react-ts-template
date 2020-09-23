@@ -15,9 +15,9 @@ import EslintWebpackPlugin from 'eslint-webpack-plugin';
 import StylelintWebpackPlugin from 'stylelint-webpack-plugin';
 import pathConfig from './paths';
 
-type WebpackEnv = 'development' | 'production';
+type webpackEnv = 'development' | 'production';
 
-const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
+const baseConfigFunc = (webpackEnv: webpackEnv): Configuration => {
 	const isEnvDevelopment = webpackEnv === 'development';
 	const isEnvProduction = webpackEnv === 'production';
 
@@ -30,7 +30,9 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 		bail: isEnvProduction,
 		output: {
 			path: pathConfig.appDist,
-			filename: isEnvProduction ? 'static/js/[name].[contenthash:8].js' : 'static/js/main.js',
+			filename: isEnvProduction
+				? 'static/js/[name].[contenthash:8].main.js'
+				: 'static/js/[name].main.js',
 			chunkFilename: isEnvProduction
 				? 'static/js/[name].[contenthash:8].chunk.js'
 				: 'static/js/[name].chunk.js',
@@ -53,21 +55,9 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 							loader: 'babel-loader',
 							options: {
 								cacheDirectory: true,
-								presets: [
-									[
-										'@babel/preset-env',
-										{
-											modules: 'commonjs',
-											targets: {
-												browsers: 'last 2 versions',
-											},
-										},
-									],
-									'@babel/preset-react',
-								],
+								presets: ['@babel/preset-env', '@babel/preset-react'],
 								plugins: [
 									'@babel/plugin-transform-runtime',
-									'@babel/plugin-syntax-dynamic-import',
 									[
 										'babel-plugin-styled-components',
 										{
@@ -94,7 +84,14 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 				{
 					test: /\.(s?css)$/i,
 					use: [
-						isEnvProduction ? MiniCssExtractPlugin.loader : 'style-loader',
+						isEnvProduction
+							? 'style-loader'
+							: {
+									loader: MiniCssExtractPlugin.loader,
+									options: {
+										esModule: true,
+									},
+							  },
 						'css-loader',
 						{
 							loader: 'postcss-loader',
@@ -133,8 +130,13 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 			minimizer: [
 				new TerserWebpackPlugin({
 					sourceMap: false,
-					extractComments: true,
-					parallel: 4,
+					terserOptions: {
+						output: {
+							comments: false,
+						},
+					},
+					extractComments: false,
+					parallel: true,
 					cache: true,
 				}),
 				new OptimizeCSSAssetsPlugin({}),
@@ -148,8 +150,7 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 				chunks: 'all',
 				name: isEnvDevelopment,
 				maxInitialRequests: Infinity,
-				minSize: 1024 * 50,
-				minChunks: 2,
+				maxSize: isEnvDevelopment ? 0 : 300000,
 				cacheGroups: {
 					vendor: {
 						test: /[\\/]node_modules[\\/]/,
@@ -157,22 +158,17 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 							const packageName = module.context.match(
 								/[\\/]node_modules[\\/](.*?)([\\/]|$)/,
 							)[1];
-							return `vendor.${packageName.replace('@', '')}`;
+							return `${packageName.replace('@', '')}`;
 						},
 						chunks: 'all',
-						reuseExistingChunk: false,
 						priority: 10,
+						minChunks: 2,
+						reuseExistingChunk: true,
 					},
 				},
 			},
 		},
 		plugins: [
-			new HardSourceWebpackPlugin(),
-			new ForkTsCheckerWebpackPlugin({}),
-			new ForkTsCheckerNotifierWebpackPlugin({
-				title: 'TypeScript',
-				excludeWarnings: false,
-			}),
 			new CleanWebpackPlugin(),
 			new HtmlWebpackPlugin({
 				template: pathConfig.appHtmlTemplate,
@@ -185,6 +181,7 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 					minifyURLs: isEnvProduction,
 				},
 			}),
+			isEnvProduction && new HardSourceWebpackPlugin(),
 			isEnvProduction &&
 				new CopyWebpackPlugin({
 					patterns: [
@@ -199,10 +196,11 @@ const baseConfigFunc = (webpackEnv: WebpackEnv): Configuration => {
 				}),
 			isEnvProduction &&
 				new MiniCssExtractPlugin({
-					filename: 'static/css/[name].[contenthash:8].css',
+					filename: 'static/css/[name].css',
 					chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
 				}),
 			isEnvProduction && new BundleAnalyzerPlugin(),
+			isEnvDevelopment && new ForkTsCheckerWebpackPlugin({ async: true }),
 			isEnvDevelopment && new HotModuleReplacementPlugin(),
 			isEnvDevelopment &&
 				new EslintWebpackPlugin({

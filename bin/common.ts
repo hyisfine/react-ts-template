@@ -13,6 +13,8 @@ const commonConfig = {
 		hash: false, // hash值
 		entrypoints: false, //	入口文件
 		children: false, //	子组件
+		chunksSort: 'size',
+		excludeAssets: /.txt/,
 	},
 };
 
