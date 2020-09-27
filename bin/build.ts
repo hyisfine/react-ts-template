@@ -11,6 +11,7 @@ const compiler = webpack(webpackConfig);
 compiler.hooks.beforeCompile.tap('beforeCompile', () => {
 	commonConfig.clearTerminal();
 	console.log(chalk.cyan.bold(`🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️♲`));
+	console.log(chalk.blue.bold(`building...`));
 });
 compiler.run((error, stats) => {
 	if (error) {

@@ -1,4 +1,4 @@
-import { Configuration, HotModuleReplacementPlugin } from 'webpack';
+import { Configuration, HotModuleReplacementPlugin, NamedModulesPlugin } from 'webpack';
 import TerserWebpackPlugin from 'terser-webpack-plugin';
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
@@ -14,6 +14,7 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import EslintWebpackPlugin from 'eslint-webpack-plugin';
 import StylelintWebpackPlugin from 'stylelint-webpack-plugin';
 import pathConfig from './paths';
+import argvConfig from './argv';
 
 type webpackEnv = 'development' | 'production';
 
@@ -55,7 +56,15 @@ const baseConfigFunc = (webpackEnv: webpackEnv): Configuration => {
 							loader: 'babel-loader',
 							options: {
 								cacheDirectory: true,
-								presets: ['@babel/preset-env', '@babel/preset-react'],
+								presets: [
+									[
+										'@babel/preset-env',
+										{
+											targets: 'last 10 chrome version',
+										},
+									],
+									'@babel/preset-react',
+								],
 								plugins: [
 									'@babel/plugin-transform-runtime',
 									[
@@ -135,7 +144,7 @@ const baseConfigFunc = (webpackEnv: webpackEnv): Configuration => {
 							comments: false,
 						},
 					},
-					extractComments: false,
+					extractComments: true,
 					parallel: true,
 					cache: true,
 				}),
@@ -199,9 +208,10 @@ const baseConfigFunc = (webpackEnv: webpackEnv): Configuration => {
 					filename: 'static/css/[name].css',
 					chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
 				}),
-			isEnvProduction && new BundleAnalyzerPlugin(),
+			isEnvProduction && argvConfig.useBundleAnalyzer && new BundleAnalyzerPlugin(),
 			isEnvDevelopment && new ForkTsCheckerWebpackPlugin({ async: true }),
 			isEnvDevelopment && new HotModuleReplacementPlugin(),
+			isEnvDevelopment && new NamedModulesPlugin(),
 			isEnvDevelopment &&
 				new EslintWebpackPlugin({
 					fix: true,

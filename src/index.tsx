@@ -1,11 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { App } from './App';
+import A from './page/a';
 
-let a = (a) => {
-	console.log(a.test());
-};
+let a = '12345678';
+let b = Number(a);
 
-a(1);
-
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(
+	<App>
+		<A />
+		{b}
+	</App>,
+	document.getElementById('root'),
+);

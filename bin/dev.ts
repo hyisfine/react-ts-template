@@ -1,13 +1,12 @@
 import webpack from 'webpack';
-import WebpackDevServer, { Configuration } from 'webpack-dev-server';
 import chalk from 'chalk';
+import WebpackDevServer, { Configuration } from 'webpack-dev-server';
 import paseConfigFunc from '../webpack/config';
 import pathConfig from '../webpack/paths';
 import commonConfig from './common';
 
 process.env.NODE_ENV = 'development';
 process.env.PORT = '8080';
-// process.env.TS_NODE_PROJECT = './../tsconfig-webpack.json';
 const webpackConfig = paseConfigFunc('development');
 const webpackDevServerOptions: Configuration = {
 	contentBase: pathConfig.appPublic,
@@ -26,7 +25,7 @@ const server = new WebpackDevServer(compiler, webpackDevServerOptions);
 compiler.hooks.beforeCompile.tap('beforeCompile', () => {
 	commonConfig.clearTerminal();
 	console.log(chalk.cyan.bold(`🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️♲`));
-	console.log(chalk.cyan.bold(`dev server listening on port ${process.env.PORT}`));
+	console.log(chalk.cyan.bold(`===== http://localhost:${process.env.PORT} =====`));
 });
 // compiler.hooks.afterEmit.tap('afterEmit', () => {});
 

@@ -47,11 +47,11 @@
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^6.1.0",
     "css-loader": "^4.2.2",
-    "eslint": "^7.9.0",
+    "eslint": "^7.13.0",
     "eslint-config-alloy": "^3.8.0",
     "eslint-loader": "^4.0.2",
     "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-react": "^7.20.6",
+    "eslint-plugin-react": "^7.21.5",
     "eslint-webpack-plugin": "^2.1.0",
     "file-loader": "^6.1.0",
     "fork-ts-checker-notifier-webpack-plugin": "^3.0.0",
@@ -91,7 +91,7 @@
   "browserslist": [
     "last 2 versions",
     "> 1%",
-    "not ie <=10"
+    "not ie <=11"
   ],
   "husky": {
     "hooks": {
@@ -100,7 +100,7 @@
     }
   },
   "lint-staged": {
-    "src/*.ts?(x)": [
+    "src/**/*.ts(x)?": [
       "eslint  --cache --fix",
       "prettier --write",
       "git add ."
