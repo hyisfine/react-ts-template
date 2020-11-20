@@ -1,4 +1,4 @@
-const argvStr = process.env.npm_config_argv || '';
+const argvStr = process?.env?.npm_config_argv || '';
 
 const useBundleAnalyzer = argvStr.includes('--a');
 

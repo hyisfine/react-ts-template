@@ -13,6 +13,7 @@ import ForkTsCheckerNotifierWebpackPlugin from 'fork-ts-checker-notifier-webpack
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import EslintWebpackPlugin from 'eslint-webpack-plugin';
 import StylelintWebpackPlugin from 'stylelint-webpack-plugin';
+import CompressWebpackPlugin from 'compress-webpack-plugin';
 import pathConfig from './paths';
 import argvConfig from './argv';
 
@@ -29,6 +30,13 @@ const baseConfigFunc = (webpackEnv: webpackEnv): Configuration => {
 		devtool: isEnvProduction ? false : 'cheap-module-eval-source-map',
 		entry: pathConfig.appIndexJs,
 		bail: isEnvProduction,
+		externals: {
+			react: 'React',
+			'react-dom': 'ReactDOM',
+			history: 'History',
+			'react-router-dom': 'ReactRouterDOM',
+			'react-router': 'ReactRouter',
+		},
 		output: {
 			path: pathConfig.appDist,
 			filename: isEnvProduction
@@ -190,6 +198,7 @@ const baseConfigFunc = (webpackEnv: webpackEnv): Configuration => {
 					minifyURLs: isEnvProduction,
 				},
 			}),
+			isEnvProduction && new CompressWebpackPlugin({}),
 			isEnvProduction && new HardSourceWebpackPlugin(),
 			isEnvProduction &&
 				new CopyWebpackPlugin({

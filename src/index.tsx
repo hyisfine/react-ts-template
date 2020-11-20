@@ -1,15 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { App } from './App';
-import A from './page/a';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
-let a = '12345678';
-let b = Number(a);
+import App from './App';
 
-ReactDOM.render(
-	<App>
-		<A />
-		{b}
-	</App>,
-	document.getElementById('root'),
-);
+console.log(Link);
+
+ReactDOM.render(<App />, document.getElementById('root'));
