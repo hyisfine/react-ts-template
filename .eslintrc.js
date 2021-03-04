@@ -68,6 +68,7 @@ module.exports = {
 				prop: 'parens-new-line',
 			},
 		],
+		'react/prop-types': 0,
 	},
 	settings: {
 		react: {

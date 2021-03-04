@@ -1,31 +1,16 @@
-import React, { PureComponent } from 'react';
-// import router from './router';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+/* eslint-disable react/no-children-prop */
+import React, { Suspense } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+import getRouterConfig from 'router';
+import renderRoutes from 'router/renderRoutes';
+
+const routeConfig = getRouterConfig();
 
 function App() {
 	return (
-		<Router>
-			<div>
-				<nav>
-					<ul>
-						<li>
-							<Link to='/'>Home</Link>
-						</li>
-						<li>
-							<Link to='/about'>About</Link>
-						</li>
-						<li>
-							<Link to='/users'>Users</Link>
-						</li>
-					</ul>
-				</nav>
-				<Switch>
-					<Route path='/about'>关于</Route>
-					<Route path='/users'>用户</Route>
-					<Route path='/'>首页</Route>
-				</Switch>
-			</div>
-		</Router>
+		<Suspense fallback={<div>Loading... </div>}>
+			<Router>{renderRoutes(routeConfig)}</Router>
+		</Suspense>
 	);
 }
 

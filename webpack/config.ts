@@ -31,11 +31,11 @@ const baseConfigFunc = (webpackEnv: webpackEnv): Configuration => {
 		entry: pathConfig.appIndexJs,
 		bail: isEnvProduction,
 		externals: {
-			react: 'React',
-			'react-dom': 'ReactDOM',
-			history: 'History',
-			'react-router-dom': 'ReactRouterDOM',
-			'react-router': 'ReactRouter',
+			// react: 'React',
+			// 'react-dom': 'ReactDOM',
+			// history: 'History',
+			// 'react-router-dom': 'ReactRouterDOM',
+			// 'react-router': 'ReactRouter',
 		},
 		output: {
 			path: pathConfig.appDist,
@@ -46,7 +46,7 @@ const baseConfigFunc = (webpackEnv: webpackEnv): Configuration => {
 				? 'static/js/[name].[contenthash:8].chunk.js'
 				: 'static/js/[name].chunk.js',
 			pathinfo: isEnvProduction,
-			// publicPath: pathConfig.publicPath,
+			publicPath: pathConfig.publicPath,
 		},
 		resolve: {
 			alias: { ...pathConfig.appAlias },
@@ -102,13 +102,13 @@ const baseConfigFunc = (webpackEnv: webpackEnv): Configuration => {
 					test: /\.(s?css)$/i,
 					use: [
 						isEnvProduction
-							? 'style-loader'
-							: {
+							? {
 									loader: MiniCssExtractPlugin.loader,
 									options: {
-										esModule: true,
+										publicPath: '/',
 									},
-							  },
+							  }
+							: 'style-loader',
 						'css-loader',
 						{
 							loader: 'postcss-loader',
@@ -198,7 +198,7 @@ const baseConfigFunc = (webpackEnv: webpackEnv): Configuration => {
 					minifyURLs: isEnvProduction,
 				},
 			}),
-			isEnvProduction && new CompressWebpackPlugin({}),
+			// isEnvProduction && new CompressWebpackPlugin({}),
 			isEnvProduction && new HardSourceWebpackPlugin(),
 			isEnvProduction &&
 				new CopyWebpackPlugin({

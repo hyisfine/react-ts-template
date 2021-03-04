@@ -16,6 +16,8 @@ const webpackDevServerOptions: Configuration = {
 	port: ~~process.env.PORT,
 	compress: true,
 	stats: commonConfig.stats,
+	historyApiFallback: true,
+	publicPath: '/',
 };
 
 WebpackDevServer.addDevServerEntrypoints(webpackConfig, webpackDevServerOptions);

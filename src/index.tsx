@@ -1,9 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-
 import App from './App';
 
-console.log(Link);
+let root = document.getElementById('root');
+if (!root) {
+	root = document.createElement('div');
+	root.id = 'root';
+	document.body.insertAdjacentElement('afterbegin', root);
+}
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<App />, root);
